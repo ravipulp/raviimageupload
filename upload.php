@@ -1,5 +1,5 @@
 <?php
- $filename  = time().'.jpg';
+ $file  = time().'.jpg';
  $img = str_replace(" ","+",$_REQUEST['queryString']);
  $image_url = "images/";
  
@@ -22,7 +22,7 @@ elseif(strpos($img,'data:image/bmp') !== false)
 }
 
 $data    = base64_decode($img);
-$success = file_put_contents($image_url.$filename, $data);
+$success = file_put_contents($image_url.$file, $data);
  
 
  if($success){

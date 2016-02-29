@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<title>xhr.send(FormData) Example</title>
+</head>
+<body>
+
+<input type="file" name="afile" id="afile" accept="image/*"/>
+
+<script>
+document.querySelector('#afile').addEventListener('change', function(e) {
+  var file = this.files[0];
+
+  var fd = new FormData();
+  fd.append("afile", file);
+ 
+  var xhr = new XMLHttpRequest();
+  var xhr2 = new XMLHttpRequest();
+  xhr.open('POST', 'handle_file_upload.php', true);
+  
+  xhr.upload.onprogress = function(e) {
+    if (e.lengthComputable) {
+      var percentComplete = (e.loaded / e.total) * 100;
+	  var percent = Math.round(percentComplete);
+      console.log(percent + '% uploaded');
+    }
+  };
+
+  xhr.onload = function() {
+    if (this.status == 200) {
+      var resp = JSON.parse(this.response);
+
+      console.log('Server got:', resp);
+
+      var image = document.createElement('img');
+      image.src = resp.dataUrl;
+	  var imageData = resp.dataUrl
+	  xhr2.open("POST", "upload.php", true);
+	   xhr2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	   
+	  xhr2.send("queryString="+imageData);
+      document.body.appendChild(image);
+    };
+  };
+
+  xhr.send(fd);
+}, false);
+
+
+</script>
+<!--[if IE]>
+<script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+<script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+
+</body>
+</script>
+</html>
